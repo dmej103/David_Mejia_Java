@@ -1,5 +1,6 @@
 package com.company;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -30,92 +31,56 @@ public class Main {
 
 
     public static void main(String[] args) {
-    //Create Customer accounts for all clients;
+        //Create Customer accounts for all clients;
 
-        //Construct's WayneEnterprises accounts
-        Customer wayneEnterprises = new Customer();
-        AccountRecord wayneEnterprisesAccountRecord = new AccountRecord();
-        List<String[]> wEnterprisesArray = new ArrayList<>();
+        List<Customer> customers = new ArrayList<>();
+        List<String> IDs = new ArrayList<>();
+        List<String[]> customerTransactionDetails = new ArrayList<>();
+        AccountRecord accountRecord;
 
-        //Populate wEnterprisesArray to contain all strings[] with wayneEnterprises account data.
-        wEnterprisesArray = customerData.stream()
-                .filter(data -> data[0].equals("1"))
-                .collect(Collectors.toList());
+        //Iterate through the customerData list to create list of customers.
+        //Check IDs list to check if customer with that specific ID already exists.
+        //If ID does not exist in list, new customer is created and added to Customer object list.
+        for (String[] data : customerData){
+            if (!IDs.contains(data[0])){
+                IDs.add(data[0]);
+                Customer customer = new Customer();
+                customer.setName(data[1]);
+                customer.setId(Integer.parseInt(data[0]));
+                customers.add(customer);
+            }
+        }
 
-        for (String[] data : wEnterprisesArray){
-            wayneEnterprisesAccountRecord = new AccountRecord();
-            wayneEnterprisesAccountRecord.setCharge(Integer.parseInt(data[2]));
-            wayneEnterprisesAccountRecord.setChargeDate(data[3]);
-            wayneEnterprises.getCharges().add(wayneEnterprisesAccountRecord);
-            wayneEnterprises.setId(Integer.parseInt(data[0]));
-            wayneEnterprises.setName(data[1]);
-        }   //---End of WayneEnterprises Account construction and data population;
+        //Iterate through the customerData list and add charges to each existing
+        //customer via their accountRecord.
+        for (Customer customer : customers){
+            customerTransactionDetails = customerData.stream()
+                    .filter(data -> data[0].equals(String.valueOf(customer.getId())))
+                    .collect(Collectors.toList());
 
-        //Construct's Daily Planet's account
-        Customer dailyPlanet = new Customer();
-        AccountRecord dailyPlanetAccountRecord = new AccountRecord(); //May throw error since "account" is duplicate of the wayne account
-        List<String[]> dPlanetArray;
-
-        //Populate dPlanetArray to contain all strings[] with dailyPlanets account data
-        dPlanetArray = customerData.stream()
-                .filter(data -> data[0].equals("2"))
-                .collect(Collectors.toList());
-        for (String[] data: dPlanetArray) {
-            dailyPlanetAccountRecord = new AccountRecord();
-            dailyPlanetAccountRecord.setCharge(Integer.parseInt(data[2]));
-            dailyPlanetAccountRecord.setChargeDate(data[3]);
-            dailyPlanet.getCharges().add(dailyPlanetAccountRecord);
-            dailyPlanet.setId(Integer.parseInt(data[0]));
-            dailyPlanet.setName(data[1]);
-        }   //---End of Daily Planet's account construction and data population;
-
-
-        //Construct's Ace Chemical's account
-        Customer aceChemical = new Customer();
-        AccountRecord aceChemicalAccountRecord = new AccountRecord();
-        List<String[]> aceChemicalArray = new ArrayList<>();
-
-        //Populate aceChemicalArray to contain all strings[] with aceChemical's account data
-        aceChemicalArray = customerData.stream()
-                .filter(data -> data[0].equals("3"))
-                .collect(Collectors.toList());
-
-        for (String[] data: aceChemicalArray){
-            aceChemicalAccountRecord = new AccountRecord();
-            aceChemicalAccountRecord.setCharge(Integer.parseInt(data[2]));
-            aceChemicalAccountRecord.setChargeDate(data[3]);
-            aceChemical.getCharges().add(aceChemicalAccountRecord);
-            aceChemical.setId(Integer.parseInt(data[0]));
-            aceChemical.setName(data[1]);
-        }   //---End of Ace Chemicals account construction and data population;
-
-
-        //Create list<Customer> to hold one copy of each customer;
-        List<Customer> clients = new ArrayList<Customer>();
-        clients.add(wayneEnterprises);
-        clients.add(aceChemical);
-        clients.add(dailyPlanet);
+            for (String[] data : customerTransactionDetails) {
+                accountRecord = new AccountRecord();
+                accountRecord.setCharge(Integer.parseInt(data[2]));
+                accountRecord.setChargeDate(data[3]);
+                customer.getCharges().add(accountRecord);
+            }
+        }
 
         //Create and populate the positiveAccounts list and negativeAccounts list;
-        List<Customer> positiveAccounts = clients.stream()
-                .filter(client -> client.getBalance() >= 0)
+        List<Customer> positiveAccounts = customers.stream()
+                .filter(customer -> customer.getBalance() >= 0)
                 .collect(Collectors.toList());
 
-        List<Customer> negativeAccounts = clients.stream()
-                .filter(client -> client.getBalance() < 0)
+        List<Customer> negativeAccounts = customers.stream()
+                .filter(customer -> customer.getBalance() < 0)
                 .collect(Collectors.toList());
 
         //Print list of customers based on positive or negative balance;
-        System.out.println("Positive accounts:");  //Prints all customers with a positive balance;
+        System.out.println("Positive accounts:");
         positiveAccounts.forEach(System.out::println);
         System.out.println("\n");
-
-        System.out.println("Negative accounts:");   //Prints all customers with a negative balance;
+        System.out.println("Negative accounts:");
         negativeAccounts.forEach(System.out::println);
-
-        System.out.println("\n");
-
-        System.out.println("CUSTOMER LIST BELOW:");
-        clients.forEach(System.out::println);
     }
 }
+
