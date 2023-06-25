@@ -46,7 +46,7 @@ public class chatterBookController{
         return userList;
     }
 
-    //HTTP Method that returns a single user by username. Should display username and all user's chatterPosts.
+    //HTTP Request that returns a single user by username. Should display username and all user's chatterPosts.
     @RequestMapping(value = "/users/{name}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public User getUserByUserName(@PathVariable String name){
@@ -61,7 +61,7 @@ public class chatterBookController{
         return selectedUser;
     }
 
-    //HTTP Method that returns strictly only the ChatterPosts of a user by username.
+    //HTTP Request that returns strictly only the ChatterPosts of a user by username.
     @RequestMapping(value = "/users/names/{name}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public List<ChatterPost> getPostsOfUser(@PathVariable String name){
