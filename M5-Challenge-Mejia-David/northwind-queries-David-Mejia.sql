@@ -16,8 +16,8 @@ WHERE ship_state LIKE 'Pennsylvania';
 
 -- List the first name and last name of all employees with last names that start with the letter W.
 SELECT first_name, last_name
-FROM employees e ;
-WHERE last_name LIKE 'W%';
+FROM employees e
+WHERE last_name LIKE 'w%';
 
 -- List all customers from zip codes that start with 55.
 SELECT *
